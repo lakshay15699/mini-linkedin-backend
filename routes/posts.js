@@ -1,52 +1,48 @@
-const express = require("express");
+import express from 'express';
+import Post from '../models/Post.js';
+
 const router = express.Router();
-const Post = require("../models/Post");
-const User = require("../models/User");
-const authMiddleware = require("../middleware/auth");
 
-// Create a post (protected)
-router.post("/", authMiddleware, async (req, res) => {
-  const { content } = req.body;
-
-  if (!content) return res.status(400).json({ error: "Content is required" });
-
+// @route   POST /api/posts
+// @desc    Create a new post
+router.post('/', async (req, res) => {
   try {
+    const { userId, content } = req.body;
+
     const newPost = new Post({
+      userId,
       content,
-      author: req.user.id
+      createdAt: new Date()
     });
 
     await newPost.save();
-    res.status(201).json(newPost);
+    res.status(201).json({ message: 'Post created', post: newPost });
+
   } catch (err) {
-    res.status(500).json({ error: "Server error" });
+    res.status(500).json({ message: 'Error creating post' });
   }
 });
 
-// Get all posts (public feed)
-router.get("/", async (req, res) => {
+// @route   GET /api/posts
+// @desc    Get all posts (feed)
+router.get('/', async (req, res) => {
   try {
-    const posts = await Post.find()
-      .sort({ createdAt: -1 })
-      .populate("author", "name email");
-
-    res.json(posts);
+    const posts = await Post.find().sort({ createdAt: -1 }).populate('userId', 'name');
+    res.status(200).json(posts);
   } catch (err) {
-    res.status(500).json({ error: "Server error" });
+    res.status(500).json({ message: 'Error fetching posts' });
   }
 });
 
-// Get posts by user
-router.get("/user/:userId", async (req, res) => {
+// @route   GET /api/posts/user/:userId
+// @desc    Get posts for a specific user
+router.get('/user/:userId', async (req, res) => {
   try {
-    const posts = await Post.find({ author: req.params.userId })
-      .sort({ createdAt: -1 })
-      .populate("author", "name email");
-
-    res.json(posts);
+    const posts = await Post.find({ userId: req.params.userId }).sort({ createdAt: -1 });
+    res.status(200).json(posts);
   } catch (err) {
-    res.status(500).json({ error: "Server error" });
+    res.status(500).json({ message: 'Error fetching user posts' });
   }
 });
 
-module.exports = router;
+export default router;
