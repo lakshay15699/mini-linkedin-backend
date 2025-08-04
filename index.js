@@ -13,7 +13,10 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middlewares
-app.use(cors());
+app.use(cors({
+    origin: "https://mini-linkedin-frontend-1evv.onrender.com", 
+    credentials: true, 
+  }));
 app.use(express.json());
 
 // Routes
