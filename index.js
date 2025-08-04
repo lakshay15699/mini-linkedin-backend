@@ -22,7 +22,8 @@ app.use('/api/users', userRoutes);
 app.use('/api/posts', postRoutes);
 
 // DB Connection
-mongoose.connect(process.env.MONGO_URI, {
+mongoose
+.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
