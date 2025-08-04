@@ -19,7 +19,7 @@ app.use(cors({
     credentials: true, 
   }));
 app.use(express.json());
-app.use("/api/posts", postRoutes);
+
 
 // Routes
 app.use('/api/auth', authRoutes);
