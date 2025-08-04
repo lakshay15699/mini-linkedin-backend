@@ -1,3 +1,10 @@
+import express from 'express';
+import Post from '../models/Post.js';
+
+const router = express.Router();
+
+// @route   POST /api/posts
+// @desc    Create a new post
 router.post('/', async (req, res) => {
   try {
     const { userId, content } = req.body;
@@ -39,5 +46,6 @@ router.get('/user/:userId', async (req, res) => {
 });
 
 export default router;
+
 
 
